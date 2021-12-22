@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  portainer:
+    image: "cr.portainer.io/portainer/portainer-ce:2.9.3"
+    container_name: "portainer-container"
+    restart: always
+    ports:
+      - "9433:9433"
+      - "8000:8000" 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${PWD}/DevOps/docker/portainer/data/:/data
