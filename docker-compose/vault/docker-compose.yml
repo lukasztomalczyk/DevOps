@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  vault:
+    image: "vault:latest"
+    container_name: "vault-container"
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=myroottoken
+    command:
+      - "server"
+    volumes:
+    # for linux
+    #  - ${PWD}/DevOps/docker/vault/data/backend:/vault/file
+    #  - ${PWD}/DevOps/docker/vault/data/logs:/vault/logs
+      - C:/Users/lukasz.tomalczyk/Repository/DevOpsJebus/docker-compose/vault/data/backend:/vault/file
+      - C:/Users/lukasz.tomalczyk/Repository/DevOpsJebus/docker-compose/vault/data/logs:/vault/logs
+      - C:/Users/lukasz.tomalczyk/Repository/DevOpsJebus/docker-compose/vault/data/config:/vault/config
