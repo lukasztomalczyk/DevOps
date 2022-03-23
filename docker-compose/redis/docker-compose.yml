@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  redis:
+    image: "redis"
+    container_name: "redis-container"
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      #- ${PWD}/DevOps/docker-commpose/redis/data/:/data
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\redis\data:/data
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\redis\config\redis.conf:/usr/local/etc/redis/redis.conf
+      #- ${PWD}/DevOps/docker-commpose/redis/:/usr/local/etc/redis/redis.conf
