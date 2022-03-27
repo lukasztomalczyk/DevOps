@@ -1,0 +1,20 @@
+  version: "3.9" 
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.11.2
+    container_name: kibana-container
+    environment:
+      ELASTICSEARCH_HOSTS: http://localhost:9200
+      XPACK_SECURITY_ENABLED: 'true'
+      ELASTICSEARCH_PASSWORD: cxseXbzQKkg8zBUjEqZZ
+      ELASTICSEARCH_USERNAME: "kibana_system"
+      ELASTIC_CONTAINER: 'true'
+    network_mode: host
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./kibana/data:/usr/share/kibana/data:rw
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./kibana/config/:/usr/share/kibana/config
+      - /etc/apache2/ssl/self-signed.crt:/etc/kibana/config/certs/self-signed.crt
+      - /etc/apache2/ssl/self-signed.key:/etc/kibana/config/certs/self-signed.key

@@ -1,2 +1,4 @@
 docker-compose/vault/data/backend
 docker-compose/vault/data/logs
+docker-compose/rabbitmq/data
+docker-compose/mongodb/data
