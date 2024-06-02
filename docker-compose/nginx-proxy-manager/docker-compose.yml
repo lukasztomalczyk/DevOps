@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'    # HTTP
+      - '81:81'    # Web UI
+      - '443:443'  # HTTPS
+    environment:
+      DB_MYSQL_HOST: "db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "npm"
+      DB_MYSQL_NAME: "npm"
+    depends_on: 
+      - mariadb-aria
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\data:/data
+    #  - ./letsencrypt:/etc/letsencrypt
+  mariadb-aria:
+    image: 'jc21/mariadb-aria:latest'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'npm'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: 'npm'
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\sql-data:/var/lib/mysql

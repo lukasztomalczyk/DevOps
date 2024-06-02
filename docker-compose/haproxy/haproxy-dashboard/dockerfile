@@ -1,0 +1,11 @@
+#FROM python:3.9.19-alpine3.20
+FROM ubuntu:latest
+COPY HAProxy-Configurator /var/HAProxy-Configurator
+
+
+WORKDIR /var/HAProxy-Configurator
+USER root
+RUN sudo apt-get install make
+RUN tree
+RUN chmod +x /var/HAProxy-Configurator/install.sh
+RUN ./install.sh

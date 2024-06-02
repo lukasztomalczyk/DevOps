@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  haproxy:
+    image: haproxy:latest
+    container_name: haproxy
+    #restart: always
+    network_mode: "host"
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\haproxy\config:/usr/local/etc/haproxy/
+
+  haproxy-dashboard:
+    image: opendevorg/haproxy-statsd:latest
+    container_name: haproxy-dashboard
+    #restart: always
+    network_mode: "host"
+    depends_on: 
+      - haproxy
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\haproxy\config:/usr/local/etc/haproxy/

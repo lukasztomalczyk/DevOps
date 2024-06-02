@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  haproxy-configurator:
+    ##image: haproxy:latest
+    build: .  
+    container_name: haproxy
+    #restart: always
+    network_mode: "host"
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\haproxy\config:/usr/local/etc/haproxy/

@@ -1,0 +1,1 @@
+docker-compose --verbose --progress=plain up -d --force-recreate

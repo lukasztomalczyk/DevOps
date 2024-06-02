@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - C:\Users\lukas\source\repos\DevOps\docker-compose\postgress\data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: admin
+      PGDATA: /var/lib/postgresql/data/pgdata
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

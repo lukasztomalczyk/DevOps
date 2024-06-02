@@ -1,0 +1,1 @@
+docker build -t hproxy-dashboard . --progress=plain 
