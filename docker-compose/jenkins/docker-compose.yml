@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  haproxy:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins-container
+    #restart: always
+    #network_mode: "host"
+    #volumes:
+    #  - C:\Users\lukas\source\repos\DevOps\docker-compose\haproxy\config:/usr/local/etc/haproxy/
