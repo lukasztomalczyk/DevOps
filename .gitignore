@@ -6,3 +6,4 @@ docker-compose/postgress/data
 docker-compose/nginx-proxy-manager/sql-data
 docker-compose/nginx-proxy-manager/data
 docker-compose/docker-registry-ui/data
+docker-compose/jenkins/data

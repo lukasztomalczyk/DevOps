@@ -1,10 +1,20 @@
 version: '3.9'
 
 services:
-  haproxy:
+  jenkins:
     image: jenkins/jenkins:lts-jdk17
+    privileged: true
     container_name: jenkins-container
+    environment:
+      - DOCKER_TLS_VERIFY=1
+    ports:
+      - "8080:8080"
+      - "50000:50000"
     #restart: always
     #network_mode: "host"
-    #volumes:
-    #  - C:\Users\lukas\source\repos\DevOps\docker-compose\haproxy\config:/usr/local/etc/haproxy/
+    volumes:
+      - ${PWD}/data:/var/jenkins_home:rw
+  # docker-dind:
+  #   image: arm64v8/docker:24
+  #   environment:
+  #     - "DOCKER_OPTS=--storage-driver=overlay2"
