@@ -17,8 +17,10 @@ services:
     depends_on: 
       - mariadb-aria
     volumes:
-      - C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\data:/data
-      - C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\certificates:/etc/letsencrypt
+       - ${PWD}/data/:/data
+       - ${PWD}/certificates:/etc/letsencrypt
+      #- C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\data:/data
+      #- C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\certificates:/etc/letsencrypt
   mariadb-aria:
     image: 'jc21/mariadb-aria:latest'
     restart: always
@@ -28,4 +30,5 @@ services:
       MYSQL_USER: 'npm'
       MYSQL_PASSWORD: 'npm'
     volumes:
-      - C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\sql-data:/var/lib/mysql
+      - ${PWD}/sql-data:/var/lib/mysql
+      #- C:\Users\lukas\source\repos\DevOps\docker-compose\nginx-proxy-manager\sql-data:/var/lib/mysql
