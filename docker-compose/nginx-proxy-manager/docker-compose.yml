@@ -3,10 +3,11 @@ services:
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:2.11.1'
     restart: always
-    ports:
-      - '80:80'    # HTTP
-      - '81:81'    # Web UI
-      - '443:443'  # HTTPS
+    network_mode: host
+    # ports:
+    #   - '80:80'    # HTTP
+    #   - '81:81'    # Web UI
+    #   - '443:443'  # HTTPS
     environment:
       DB_MYSQL_HOST: "mariadb-aria"
       DB_MYSQL_PORT: 3306

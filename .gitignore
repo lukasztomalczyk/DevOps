@@ -5,3 +5,4 @@ docker-compose/mongodb/data
 docker-compose/postgress/data
 docker-compose/nginx-proxy-manager/sql-data
 docker-compose/nginx-proxy-manager/data
+docker-compose/redis/data
