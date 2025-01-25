@@ -1,0 +1,60 @@
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+- group: Nuget
+- name: solution
+  value: 'JuniorDevOps.Net.Notifier.sln'
+- name: project
+  value: 'JuniorDevOps.Net.Notifier/JuniorDevOps.Net.Notifier.csproj'
+- name: buildPlatform
+  value: 'Any CPU'
+- name: buildConfiguration
+  value: 'Release'
+- name: NUGET_ENABLE_LEGACY_CSPROJ_PACK
+  value: true
+- name: NUGET_VERSION
+  value: '1.1.0'
+- name: nugetKey
+  value: '$(api_key_nuget)'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+    feedsToUse: 'select'
+
+- task: VSBuild@1
+  displayName: 'Build'
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: 'Run tests'
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: pack
+    packagesToPack: '$(project)'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'NUGET_VERSION'
+    
+- task: PowerShell@2
+  displayName: 'NuGet push'
+  inputs:
+    targetType: 'inline'
+    script: 'nuget push $(Build.ArtifactStagingDirectory)\*.nupkg -ApiKey $(nugetKey) -Source https://api.nuget.org/v3/index.json'

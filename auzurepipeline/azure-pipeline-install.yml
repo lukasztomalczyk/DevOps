@@ -1,0 +1,82 @@
+trigger: none
+
+parameters:
+  - name: server
+    displayName: Repozytorium
+    type: string
+    default: 'Production'
+    values:
+      - Production
+      - Test
+  - name: ssh_connection
+    displayName: SSH Connection
+    type: string
+    default: 'ssh-prod'
+    values:
+      - ssh-prod
+      - ssh-test
+
+variables:
+  environment: '${{ parameters.server }}'
+  app_name: 'SpCraft.Notifier'
+  group_vars: 'notifier'
+
+resources:
+- repo: self
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build and Push
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: SSH@0
+      displayName: SSH create required folders
+      inputs:
+        sshEndpoint: '${{ parameters.ssh_connection }}'
+        runOptions: 'commands'
+        commands: 'mkdir -p /home/lukas/$(environment)/SpCraft.$(app_name)'
+        readyTimeout: '20000'
+    - task: replacetokens@6
+      displayName: Raplace tokens
+      inputs:
+        root: '$(Build.SourcesDirectory)/SpCraft.$(app_name)'
+        sources: 'appsettings.Production.json'
+        tokenPattern: 'doublebraces'
+        additionalVariables: '@$(Build.SourcesDirectory)/envbook_inventory/$(environment)/$(group_vars)-vars.yml'
+        missingVarAction: 'keep'
+    - task: CopyFilesOverSSH@0
+      displayName: SSH copy appsettings.$(environment).json file into server
+      inputs:
+        sshEndpoint: '${{ parameters.ssh_connection }}'
+        sourceFolder: '$(Build.SourcesDirectory)/SpCraft.$(app_name)'
+        contents: |
+          run-container-on-raspberry.sh
+          appsettings.Production.json
+        targetFolder: '/home/lukas/$(environment)/SpCraft.$(app_name)'
+        readyTimeout: '20000'
+    - task: SSH@0
+      displayName: SSH rename appsettings.json
+      inputs:
+        sshEndpoint: '${{ parameters.ssh_connection }}'
+        runOptions: 'commands'
+        commands: 'mv /home/lukas/$(environment)/SpCraft.$(app_name)/appsettings.Production.json /home/lukas/$(environment)/SpCraft.$(app_name)/appsettings.$(environment).json'
+        readyTimeout: '20000'
+    - task: SSH@0
+      displayName: SSH add required chmod
+      inputs:
+        sshEndpoint: '${{ parameters.ssh_connection }}'
+        runOptions: 'commands'
+        commands: 'chmod +x /home/lukas/$(environment)/SpCraft.$(app_name)/run-container-on-raspberry.sh'
+        readyTimeout: '20000'
+    - task: SSH@0
+      displayName: SSH run container
+      inputs:
+        sshEndpoint: '${{ parameters.ssh_connection }}'
+        runOptions: 'script'
+        args: '$(environment)'
+        scriptPath: 'SpCraft.$(app_name)/run-container-on-raspberry.sh'
+        readyTimeout: '20000'
