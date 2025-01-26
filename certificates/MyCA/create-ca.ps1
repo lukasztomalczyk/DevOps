@@ -1,7 +1,7 @@
 # Ustawienia certyfikatu
 $certName = "CN=SpCraft Root CA"
 $certPassword = ConvertTo-SecureString -String "8BUGhFo^GC7GAK" -Force -AsPlainText
-$pfxPath = Join-Path -Path $PSScriptRoot -ChildPath "DevCA.pfx"
+$pfxPath = Join-Path -Path $PSScriptRoot -ChildPath "SpCraft_Root_CA.pfx"
 
 # Tworzenie certyfikatu root CA
 $cert = New-SelfSignedCertificate -DnsName $certName -CertStoreLocation "cert:\LocalMachine\My" `
@@ -10,7 +10,7 @@ $cert = New-SelfSignedCertificate -DnsName $certName -CertStoreLocation "cert:\L
     -NotAfter (Get-Date).AddYears(10) `
     -HashAlgorithm SHA256 `
     -KeyExportPolicy Exportable `
-    -TextExtension @("2.5.29.19={text}CA=true&pathlength=0")
+    -TextExtension @("2.5.29.19={text}CA=true")
 
 # Eksportowanie certyfikatu do pliku .pfx
 Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $certPassword

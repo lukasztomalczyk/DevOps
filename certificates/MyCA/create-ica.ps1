@@ -1,8 +1,7 @@
-# Ustawienia certyfikatu
-$certName = "CN=SpCraft Intermediate Dev CA"
+$certName = "CN=SpCraft DEV CA"
 $certPassword = ConvertTo-SecureString -String "E%4N7L4*cRkwR3" -Force -AsPlainText
-$pfxPath = Join-Path -Path $PSScriptRoot -ChildPath "SpCraft_Intermediate_Dev_CA.pfx"
-$rootCaCertThumbprint = "c2c0aa4ddcae9e784079b65deaf5ff9ca20c5e68"  # Wprowadź tutaj thumbprint certyfikatu Root CA
+$pfxPath = Join-Path -Path $PSScriptRoot -ChildPath "SpCraft_DEV_CA.pfx"
+$rootCaCertThumbprint = "aa58327a316cf55b2e5a21c0a913581f3a020cf2"  # Wprowadź tutaj thumbprint certyfikatu Root CA
 
 # Znalezienie certyfikatu Root CA
 $rootCaCert = Get-ChildItem -Path "cert:\LocalMachine\My" | Where-Object { $_.Thumbprint -eq $rootCaCertThumbprint }
@@ -30,11 +29,12 @@ $cert = New-SelfSignedCertificate -DnsName $certName -CertStoreLocation "cert:\L
     -NotAfter (Get-Date).AddYears(10) `
     -HashAlgorithm SHA256 `
     -KeyExportPolicy Exportable `
-    -TextExtension @("2.5.29.19={text}CA=true&pathlength=1") `
+    -TextExtension @("2.5.29.19={text}CA=true&pathlength=0") `
     -Signer $rootCaCertObject
 
 # Eksportowanie certyfikatu do pliku .pfx
 Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $certPassword
 
-# Dodanie certyfikatu do lokalnego magazynu certyfikatów (opcjonalne)
-#$cert | Set-Location -Path "cert:\LocalMachine\Root"
+# Dodanie certyfikatu do magazynu Intermediate Certification Authorities
+# $cert | Export-Certificate -FilePath "C:\temp\intermediateCA.cer"
+# Import-Certificate -FilePath "C:\temp\intermediateCA.cer" -CertStoreLocation "cert:\LocalMachine\CA"
