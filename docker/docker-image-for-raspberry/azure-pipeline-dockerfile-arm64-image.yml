@@ -1,0 +1,37 @@
+trigger: none
+
+parameters:
+  - name: repository
+    displayName: Repozytorium
+    type: string
+    default: 'Production'
+    values:
+      - Production
+      - Test
+
+variables:
+  docker_tag: '${{ parameters.repository }}'
+
+resources:
+- repo: self
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build and Push
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@2
+      displayName: DOCKER push image
+      inputs:
+        containerRegistry: 'hub.docker.com'
+        repository: 'lukasztomalczyk/sp-craft.notifier-arm64'
+        command: 'buildAndPush'
+        Dockerfile: '$(Build.SourcesDirectory)/docker/docker-image-for-raspberry/dockerfile-arm64-image'
+        buildContext: '$(Build.SourcesDirectory)/'
+        tags:  |
+            $(Build.BuildId)
+            $(docker_tag)
